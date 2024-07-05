@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BikeController;
+use App\Http\Controllers\WelcomeController;
+use Illuminate\Http\Request;
+use App\Http\Controllers\ContactoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,28 +17,51 @@ use App\Http\Controllers\BikeController;
 |
 */
 
-Route::get('/', function () { // método de la petición
-    return view('welcome');     // retorna la vista welcome, la carga
+// Rutas para la portada y búsqueda de motos por marca y modelo
+Route::get('/', [WelcomeController::class, 'index'])->name('portada');
 
-});
+
+Route::match(['GET', 'POST'], '/bikes/search', [BikeController::class, 'search'])->name('bikes.search')/*->middleware('adult:13')*/;
+
+// CRUD de motos
+Route::resource('/bikes', BikeController::class)/*->middleware('adult:18')*/;
+
+// Formulario de confirmación de eliminación
+Route::get('/bikes/{bike}/delete', [BikeController::class, 'delete'])->name('bikes.delete')/*->middleware('adult:21')*/;
+
+// Ruta de fallback
+Route::fallback([WelcomeController::class, 'index']);
+
+//ruta para el formulario de contacto
+Route::get('/contacto', [ContactoController::class, 'index'])->name('contacto');
+
+//ruta para el envío del email de contacto
+Route::post('/contacto', [ContactoController::class, 'send'])->name('contacto.email');
 
 /*
-Route::get('bikes', [BikeController::class, 'index']);
-Route::get('bikes/{bike}', [BikeController::class, 'show']); //lo que va entre llaves es un parámetro variable, basicamente el id
+// Rutas de prueba
 
-Route::get('bikes/create', [BikeController::class, 'create']);
-Route::post('bikes', [BikeController::class, 'store']); 
+use App\Models\Bike;
 
-Route::get('bikes/{bike}/edit', [BikeController::class, 'edit']);
-Route::put('bikes/{bike}', [BikeController::class, 'update']);
+// Ruta con dos parámetros opcionales
+Route::get('bikes/search/{marca?}/{modelo?}', function($marca = '', $modelo = '') {
+    $bikes = Bike::where('marca', 'like', '%'.$marca.'%')
+        ->where('modelo', 'like', '%'.$modelo.'%')
+        ->paginate(config('pagination.bikes'));
 
-Route::get('bikes/{bike}/delete', [BikeController::class,'delete']);
-Route::delete('bikes/{bike}', [BikeController::class,'destroy']); */
+    return view('bikes.list', ['bikes' => $bikes]);
+});
 
+// Rutas de prueba con expresiones regulares
+Route::get('test/{id}', function($id) {
+    return "U enter via the first route.";
+})->where('id', '^\d{1,11}$');
 
-//CRUD de motos
-Route::resource('bikes', BikeController::class);
+Route::get('test/{dni}', function($dni) {
+    return "U enter via the second route.";
+})->where('dni', '^[\dXYZ]\d{7}[A-Z]$');
 
-
-//ruta para la confirmación de eliminación
-Route::get('bikes/{bike}/delete', [BikeController::class, 'delete'])->name('bikes.delete');
+Route::get('test/{otro}', function($otro) {
+    return "$otro no es un número ni un DNI.";
+});
+*/

@@ -1,51 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
-    <head>
-        <!-- Etiquetas META -->
+@php($pagina="nuevamoto")
+@extends('layouts.master') <!-- hereda del layout "master"-->
+@section('titulo', '¡Nueva moto!') <!-- Aparecerá "Nueva moto" allí donde tengamos yield('titulo') en el master -->
 
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="decription" content="Aplicación de gestión de motos Larabikes">
-
-        <!--Título de la página -->
-        <title>{{config('app.name')}} - PORTADA</title>
-
-        <!--Carga del CSS de Bootstrap -->
-        <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap.min.css')}}">
-
-    </head>
-    <body class="container p-3">
-        <!-- PARTE SUPERIROR (menú) -->
-         <nav>
-            <ul class="nav nav-pill my-3">
-                <li class="nav-item mr-2">
-                    <a class="nav-link active" href="{{url('/')}}">Inicio</a>
-                </li>
-                <li class="nav-item mr-2">
-                    <a class="nav-link" href="{{route('bikes.index')}}">Garaje</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{route('bikes.create')}}">Nueva Moto</a>
-                </li>
-            </ul>
-         </nav>
-
-         <!-- PARTE CENTRAL -->
-          <h1 class="my-2">Gestor de motos MartoBikes</h1>
-          <main>
-            <h2>Nueva moto!</h2>
-            @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
-
-            <form class="my-2 border p-5" method="POST" action="{{route('bikes.store')}}">
-                {{csrf_field()}} <!--Con esto evitamos ataques de errores de session -->
+@section('contenido') 
+<!-- definición de la sección "contenido" (hasta el endsection) -->
+            <form class="my-2 border p-5" method="POST" action="{{route('bikes.store')}}" enctype="multipart/form-data">
+                {{csrf_field()}} <!--Con esto evitamos ataques de errores de session, que no se mantega la session capturando el id del usuario-->
                 <div class="form-group row">
                     <label for="inputMarca" class="col-sm-2 col-form-label">Marca</label>
                     <input name="marca" type="text" class="up form-control col-sm-10"
@@ -72,25 +32,21 @@
                         <label class="form-check-label">Matriculada</label>
                     </div>
                 </div>
-
                 <div class="form-group row">
                     <button type="submit" class="btn btn-success m-2 mt-5">Guardar</button>
                     <button type="reset" class="btn btn-secondary m-2">Borrar</button>
                 </div>
-                </form> -
-
-
-                <div class="btn-group" role="group" aria-label="Links">
-                    <a href="{{url('/')}}" class="btn btn-primary m-2">Inicio</a>
-                    <a href="{{route('bikes.index')}}" class="btn btn-primary m-2">Garaje</a>
+                <div class="form-group row">
+                    <label for="inputImagen" class="col-sm-2 col-form-label">Imagen</label>
+                    <input name="imagen" type="file" class="form-control-file col-sm-10" id="inputImagen">
                 </div>
-            </main>
+                </form> 
+@endsection 
+<!--fin de la seccion contenido -->
 
-          <!-- PARTE INFERIOR -->
-           <footer class="page-footer font-small p-4 bg-light">
-                <p> Aplicación desarrollada por Víctor Martorell.
-                    Desarrollada utilizando uso de <b>Laravel</b> y <b>Bootstrap</b>.</p>
-                </p>
-           </footer>
-        </body>
-</html>
+@section('enlaces')
+        @parent
+        <a href="{{route('bikes.index')}}" class="btn btn-primary m-2">Garaje</a>
+@endsection
+                
+               

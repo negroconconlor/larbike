@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DRIVER', 'local'),
+    'default' => env('FILESYSTEM_DRIVER', 'public'),
 
     /*
     |--------------------------------------------------------------------------
@@ -27,6 +27,9 @@ return [
     | Supported Drivers: "local", "ftp", "sftp", "s3"
     |
     */
+
+    //ruta por defecto para las fotos de las motos
+    'bikesImageDir' => 'images/bikes/',
 
     'disks' => [
 
@@ -51,6 +54,14 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
         ],
+
+         /*// Agrega esta configuración si aún no existe
+        'bikes' => [
+        'driver' => 'local',
+        'root' => storage_path('app/public/bikes'),
+        'url' => env('APP_URL') . '/storage/bikes',
+        'visibility' => 'public',
+    ],*/
 
     ],
 

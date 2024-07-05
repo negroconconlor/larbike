@@ -1,39 +1,7 @@
-<!DOCTYPE html>
-<html lang="es">
-    <head>
-        <!-- Etiquetas META -->
-
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="decription" content="Aplicación de gestión de motos Larabikes">
-
-        <!--Título de la página -->
-        <title>{{config('app.name')}} - PORTADA</title>
-
-        <!--Carga del CSS de Bootstrap -->
-        <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap.min.css')}}">
-
-    </head>
-    <body class="container p-3">
-        <!-- PARTE SUPERIROR (menú) -->
-         <nav>
-            <ul class="nav nav-pill my-3">
-                <li class="nav-item mr-2">
-                    <a class="nav-link active" href="{{url('/')}}">Inicio</a>
-                </li>
-                <li class="nav-item mr-2">
-                    <a class="nav-link" href="{{route('bikes.index')}}">Garaje</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{route('bikes.create')}}">Nueva Moto</a>
-                </li>
-            </ul>
-         </nav>
-
-         <!-- PARTE CENTRAL -->
-          <h1 class="my-2">Gestor de motos MartoBikes</h1>
-          <main>
-            <h2>Listado de  mototototos!</h2>
+@extends('layouts.master') <!-- hereda del layout "master"-->
+@php($pagina="listamotos")
+@section('titulo', 'Listado de motototottotos!')
+@section('contenido')
             @if(Session::has('success'))
                 <div class="alert alert-success">
                     {{Session::get('success')}}
@@ -47,15 +15,28 @@
             </div>
 
             <table class="table table-striped table-bordered">
+           
                 <tr>
                     <th>ID</th>
+                    <th>Imagen</th>
                     <th>Marca</th>
                     <th>Modelo</th>
                     <th>Operaciones</th>
                 </tr>
+                
                 @foreach($bikes as $bike)
                 <tr>
                     <td>{{$bike->id}}</td>
+                    <td class="text-center" style="max-width: 80px">
+                        <img class="rounded" style="max-width: 80%"
+                        alt="Imagen de {{$bike->marca}} {{$bike->modelo}}"
+                        title="Imagen de {{$bike->marca}} {{$bike->modelo}}"
+                        src="{{
+                        $bike->imagen?
+                        asset('storage/'.config('filesystems.bikesImageDir')).'/'.$bike->imagen:
+                        asset('storage/'.config('filesystems.bikesImageDir')).'/default.png'
+                        }}">
+                    </td>
                     <td>{{$bike->marca}}</td>
                     <td>{{$bike->modelo}}</td>
                     <td class="text-center">
@@ -72,16 +53,4 @@
                 @endforeach
                 <tr><td colspan="4">Mostrando {{sizeof($bikes)}} de {{$total}}.</td></tr>
                 </table>
-                <div class="btn-group" role="group" label="Links">
-                    <a href="{{url('/')}}" class="btn btn-primary mr-2">Inicio</a>
-                </div>
-            </main>
-
-          <!-- PARTE INFERIOR -->
-           <footer class="page-footer font-small p-4 bg-light">
-                <p> Aplicación desarrollada por Víctor Martorell.
-                    Desarrollada haciendo uso de <b>Laravel</b> y <b>Bootstrap</b>.</p>
-                </p>
-           </footer>
-        </body>
-</html>
+@endsection

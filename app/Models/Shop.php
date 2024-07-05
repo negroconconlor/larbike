@@ -8,3 +8,4 @@ class Shop extends Model{
     protected $fillable = ['nombre', 'poblacion', 'telefono'];
 
 };
+

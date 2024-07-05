@@ -1,19 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-    <head>
-        <!-- Etiquetas META -->
-
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="decription" content="Aplicación de gestión de motos Larabikes">
-
-        <!--Título de la página -->
-        <title>{{config('app.name')}} - PORTADA</title>
-
-        <!--Carga del CSS de Bootstrap -->
-        <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap.min.css')}}">
-
-    </head>
+@extends('layouts.master') <!-- hereda del layout "master"-->
     <body class="container p-3">
         <!-- PARTE SUPERIROR (menú) -->
          <nav>
@@ -38,7 +23,7 @@
                 <div class="alert alert-danger">
                     <ul>
                         @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
+                            <li>{{ $error }}</li> 
                         @endforeach
                     </ul>
                 </div>
@@ -49,7 +34,7 @@
                     {{ Session::get('success') }}
                 </div>
             @endif
-            <form class="my-2 border p-5" method="POST" action="{{route('bikes.update', $bike->id)}}">
+            <form class="my-2 border p-5" method="POST" action="{{route('bikes.update', $bike->id)}}" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <input name="_method" type="hidden" value="PUT">
 
@@ -79,13 +64,7 @@
                         <label class="form-check-label">Matriculada</label>
                     </div>
                 </div>
-
-                <div class="form-group row">
-                    <button type="submit" class="btn btn-success mt-5 m-2">Guardar</button>
-                    <button type="reset" class="btn btn-secondary m-2">Reestablecer</button>
-                </div>
-            </form>
-            <div class="text-end my-3">
+                <div class="text-end my-3">
                 <div class="btn-group mx-2">
                         <a class="mx-2" href="{{route('bikes.show', $bike->id)}}">
                         <img height="40" width="40" src="{{asset('images/buttons/show.png')}}" alt="Detalles" title="Detalles">
@@ -95,6 +74,45 @@
                         </a>
                 </div>
             </div>
+            
+            <div class="form-group row my-3">
+                <div class="col-sm-9">
+                    <label for="inputImagen" class="col-sm-2 col-form-label">
+                        {{$bike->imagen? 'Sustituir' : 'Añadir'}} imagen
+                    </label>
+                    <input name="imagen" type="file" class="form-control-file" id="inputImagen">
+
+                    @if($bike->imagen)
+                    <div class="form-check my-3">
+                        <input name="eliminarimagen" type="checkbox"
+                               class="form-check-input" id="inputEliminar">
+                        <label for="inputEliminar" class=" form-check-label">Eliminar imagen</label>       
+                    </div>
+                    <script>
+                        inputEliminar.onchage = function(){
+                            inputImagen.disabled = this.checked;
+                        }
+                    </script>
+                    @endif
+                <div class="col-sm-3">
+                    <label>Imagen atual:</label>
+                    <img class="rounded img-thumbnail my-3" style="max-width: 400px"
+                            alt="Imagen de {{$bike->marca}} {{$bike->modelo}}"
+                            title="Imagen de {{$bike->marca}} {{$bike->modelo}}"
+                            src="{{
+                                $bike->imagen ?
+                                asset('storage/'.config('filesystems.bikesImageDir')).'/'.$bike->imagen :
+                                asset('storage/'.config('filesystems.bikesImageDir')).'/default.png'
+                            }}">
+                </div>
+            </div>
+                <div class="form-group row">
+                    <button type="submit" class="btn btn-success mt-5 m-2">Guardar</button>
+                    <button type="reset" class="btn btn-secondary m-2">Reestablecer</button>
+                </div>
+                
+            </form>
+          
 
             <div class="btn-group" role="group" aria-label="Links">
                 <a href="{{url('/')}}" class="btn btn-primary m-2">Inicio</a>
